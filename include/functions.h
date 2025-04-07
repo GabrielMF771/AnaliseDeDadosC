@@ -16,9 +16,9 @@ int contarLinhas(const char *nomeArquivo);
 int lerDados(const char *nomeArquivo, Processo *processos);
 
 // Ordenação
-void salvarDadosOrdenados(const char *nomeArquivo, Processo processos[], int n);
 void quicksort(Processo processos[], int low, int high);
 int partition(Processo processos[], int low, int high);
 void ordenarPorId(Processo processos[], int n);
+void salvarDadosOrdenados(const char *nomeArquivo, Processo processos[], int n);
 
 #endif // FUNCTIONS_H
