@@ -32,62 +32,86 @@ int lerDados(const char *nomeArquivo, Processo *processos) {
     }
 
     char linha[512];
-    char id_classe_temp[50];
-    char id_assunto_temp[50];
     int i = 0;
 
     // Ignorar o cabeçalho
-    fgets(linha, sizeof(linha), arquivo);
+    if (fgets(linha, sizeof(linha), arquivo) == NULL) {
+        fclose(arquivo);
+        return 0;
+    }
 
     while (fgets(linha, sizeof(linha), arquivo)) {
-        processos[i].numero[0] = '\0';
-        processos[i].data_ajuizamento[0] = '\0';
-        processos[i].id_classe[0] = '\0';
-        processos[i].id_assunto[0] = '\0';
-        processos[i].ano_eleicao = 0;
+        // Remove o '\n' no final da linha, se existir
+        linha[strcspn(linha, "\n")] = '\0';
 
-        // Verificar formato dos campos id_classe e id_assunto
-        if (strstr(linha, "\"{") != NULL) {
-            // Tem pelo menos um campo multivalorado
-            sscanf(linha, "%d,\"%49[^\"]\",%49[^,],\"%49[^\"]\",\"%49[^\"]\",%d",
-                   &processos[i].id,
-                   processos[i].numero,
-                   processos[i].data_ajuizamento,
-                   id_classe_temp,
-                   id_assunto_temp,
-                   &processos[i].ano_eleicao);
-        } else {
-            // Formato simples para ambos os campos
-            sscanf(linha, "%d,\"%49[^\"]\",%49[^,],{%49[^}]},{%49[^}]},%d",
-                   &processos[i].id,
-                   processos[i].numero,
-                   processos[i].data_ajuizamento,
-                   id_classe_temp,
-                   id_assunto_temp,
-                   &processos[i].ano_eleicao);
+        // Array para armazenar os campos extraídos
+        char campos[6][256] = { {0} };
+        int campoIndex = 0;
+        char *ptr = linha;
+
+        while (*ptr && campoIndex < 6) {
+            // Se o campo começa com aspas, precisamos buscar o fechamento, que pode incluir vírgulas
+            if (*ptr == '"') {
+                ptr++;
+                char *start = ptr;
+                while (*ptr && *ptr != '"') {
+                    ptr++;
+                }
+                int len = ptr - start;
+                strncpy(campos[campoIndex], start, len);
+                campos[campoIndex][len] = '\0';
+                if (*ptr == '"') {
+                    ptr++;
+                }
+                if (*ptr == ',') {
+                    ptr++;
+                }
+            } else { 
+                // Campo sem aspas (formato simples, sem vírgulas internas)
+                char *start = ptr;
+                while (*ptr && *ptr != ',') {
+                    ptr++;
+                }
+                int len = ptr - start;
+                strncpy(campos[campoIndex], start, len);
+                campos[campoIndex][len] = '\0';
+                if (*ptr == ',') {
+                    ptr++;
+                }
+            }
+            campoIndex++;
         }
 
-        // Copiar o valor de id_classe com o formato apropriado
-        if (strstr(id_classe_temp, ",") != NULL) {
-            snprintf(processos[i].id_classe, sizeof(processos[i].id_classe), "\"%s\"", id_classe_temp);
+        // Ppopula a estrutura Processo usando os campos extraídos
+        processos[i].id = atoi(campos[0]);
+
+        // Campo numero já foi processado, não incluir aspas adicionais
+        strncpy(processos[i].numero, campos[1], sizeof(processos[i].numero));
+
+        // Campo data_ajuizamento
+        strncpy(processos[i].data_ajuizamento, campos[2], sizeof(processos[i].data_ajuizamento));
+
+        // Campo id_classe:
+        if (campos[3][0] != '{') {
+            snprintf(processos[i].id_classe, sizeof(processos[i].id_classe), "{%s}", campos[3]);
         } else {
-            snprintf(processos[i].id_classe, sizeof(processos[i].id_classe), "{%s}", id_classe_temp);
+            strncpy(processos[i].id_classe, campos[3], sizeof(processos[i].id_classe));
         }
 
-        // Copiar o valor de id_assunto com o formato apropriado
-        if (strstr(id_assunto_temp, ",") != NULL) {
-            snprintf(processos[i].id_assunto, sizeof(processos[i].id_assunto), "\"%s\"", id_assunto_temp);
+        // Campo id_assunto:
+        if (campos[4][0] != '{') {
+            snprintf(processos[i].id_assunto, sizeof(processos[i].id_assunto), "{%s}", campos[4]);
         } else {
-            snprintf(processos[i].id_assunto, sizeof(processos[i].id_assunto), "{%s}", id_assunto_temp);
+            strncpy(processos[i].id_assunto, campos[4], sizeof(processos[i].id_assunto));
         }
 
+        processos[i].ano_eleicao = atoi(campos[5]);
         i++;
     }
 
     fclose(arquivo);
     return i;
 }
-
 
 void quicksort(Processo processos[], int low, int high) {
     if (low < high) {
@@ -136,18 +160,32 @@ void salvarDadosOrdenados(const char *nomeArquivo, Processo processos[], int n) 
         return;
     }
 
-    // Escrever o cabeçalho
+    // Escrever o cabeçalho (ajuste os delimitadores conforme necessário)
     fprintf(arquivo, "id;numero;data_ajuizamento;id_classe;id_assunto;ano_eleicao\n");
 
-    // Escrever os dados
     for (int i = 0; i < n; i++) {
-        fprintf(arquivo, "%d,\"%s\",%s,%s,%s,%d\n",
+        // Imprime o id, numero e data_ajuizamento como de costume.
+        fprintf(arquivo, "%d,\"%s\",%s,", 
                 processos[i].id,
-                processos[i].numero[0] ? processos[i].numero : "",
-                processos[i].data_ajuizamento[0] ? processos[i].data_ajuizamento : "",
-                processos[i].id_classe[0] ? processos[i].id_classe : "",
-                processos[i].id_assunto[0] ? processos[i].id_assunto : "",
-                processos[i].ano_eleicao);
+                processos[i].numero,
+                processos[i].data_ajuizamento);
+
+        // Campo id_classe:
+        if (strchr(processos[i].id_classe, ',') != NULL) {
+            fprintf(arquivo, "\"%s\",", processos[i].id_classe);
+        } else {
+            fprintf(arquivo, "%s,", processos[i].id_classe);
+        }
+
+        // Campo id_assunto:
+        if (strchr(processos[i].id_assunto, ',') != NULL) {
+            fprintf(arquivo, "\"%s\",", processos[i].id_assunto);
+        } else {
+            fprintf(arquivo, "%s,", processos[i].id_assunto);
+        }
+
+        // Imprime o ano da eleição
+        fprintf(arquivo, "%d\n", processos[i].ano_eleicao);
     }
 
     fclose(arquivo);
