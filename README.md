@@ -19,12 +19,12 @@ No arquivo **processo_043_202409032338**, cada linha (com exceção da primeira)
 ## O que deve ser feito:
 O programa a ser construído deve ler dados de cada processo, identificando cada um dos atributos acima para, a seguir, realizar as seguintes operações:
 
-1. Ordenar, em ordem crescente, o conjunto de dados a partir do atributo “id”;
-2. Ordenar, em ordem decrescente, o conjunto de dados a partir do atributo “data_ajuizamento”;
-3. Contar quantos processos estão vinculados a um determinado “id_classe”;
-4. Identificar quantos “id_assuntos” constam nos processos presentes na base de dados;
-5. Listar todos os processos que estão vinculados a mais de um assunto;
-6. Indicar a quantos dias um processo está em tramitação na justiça.
+1. Ordenar, em ordem crescente, o conjunto de dados a partir do atributo “id”; - Gabriel
+2. Ordenar, em ordem decrescente, o conjunto de dados a partir do atributo “data_ajuizamento”; - Gustavo
+3. Contar quantos processos estão vinculados a um determinado “id_classe”; - Henrique
+4. Identificar quantos “id_assuntos” constam nos processos presentes na base de dados; - Guilherme
+5. Listar todos os processos que estão vinculados a mais de um assunto; - Henrique
+6. Indicar a quantos dias um processo está em tramitação na justiça. - Gabriel
 
 ## Observações:
 
