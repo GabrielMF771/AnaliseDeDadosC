@@ -14,6 +14,7 @@ typedef struct {
 // Funções
 int contarLinhas(const char *nomeArquivo);
 int lerDados(const char *nomeArquivo, Processo *processos);
+int ocorrenciasClasse(Processo *processos, int chave, int tamanho);
 
 // Ordenação
 void quicksort(Processo processos[], int low, int high);

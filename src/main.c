@@ -8,6 +8,10 @@ int main() {
     Processo *processos = NULL;
     int totalProcessos;
 
+    //VARIAVEIS PARA FUNÇÃO DE CONTAGEM POR CLASSE//
+    int classeBuscada = 11528;
+    int quantidadeRepeticaoClasse = 0;
+
     // Contar o número de linhas no arquivo
     int maxProcessos = contarLinhas(arquivoEntrada);
     if (maxProcessos <= 0) {
@@ -30,12 +34,16 @@ int main() {
         return 1;
     }
 
+    //CHAMADA DA FUNÇÃO DE CONTAGEM DE REPETIÇÕES
+    quantidadeRepeticaoClasse =ocorrenciasClasse(processos, classeBuscada, maxProcessos);
+    printf("Processos vinculados ao id_classe: \"%d\": %d\n",classeBuscada, quantidadeRepeticaoClasse);
+    
     // Ordenar os dados pelo atributo id
     ordenarPorId(processos, totalProcessos);
-
+    
     // Salvar os dados ordenados em um novo arquivo
     salvarDadosOrdenados(arquivoSaida, processos, totalProcessos);
-
+    
     printf("Dados ordenados por id e salvos em '%s'.\n", arquivoSaida);
 
     // Liberar a memória alocada

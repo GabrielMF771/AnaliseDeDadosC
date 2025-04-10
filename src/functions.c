@@ -190,3 +190,43 @@ void salvarDadosOrdenados(const char *nomeArquivo, Processo processos[], int n) 
 
     fclose(arquivo);
 }
+
+int ocorrenciasClasse(Processo *processos, int chave, int tamanho){
+
+    int ocorrencias = 0;
+    int i ;
+    char aux[50] = "";
+    int auxint = 0;
+        for(i = 0; i < tamanho; i++){
+            int k =0;
+            for(int j = 1; j <50; j++){
+
+                //ATRIBUINDO A STRING AUXILIAR ATE A VIRGULA OU CHAVE FINAL
+               if(processos[i].id_classe[j] != '}' && processos[i].id_classe[j] != ','){
+
+                aux[k] = processos[i].id_classe[j];
+                k++;
+               }
+            
+               else{   
+                    if(processos[i].id_classe[j] == '}'){ //SE TIVER CHEGADO NA CHAVE FINAL
+                           auxint = atoi(aux);
+                           if(auxint == chave)
+                           ocorrencias++;
+                           memset(aux, '\0', sizeof(aux));
+                           //printf("%d\n",auxint);
+                           continue;
+
+                    }else{ //SE TIVER CHEGADO NUMA VIRGULA
+                        auxint = atoi(aux);
+                        if(auxint == chave)
+                        ocorrencias++;
+                        memset(aux, '\0', sizeof(aux));
+                        //printf("%d\n",auxint);
+                        k = 0;
+                    }
+               }
+            } 
+        }
+    return ocorrencias;
+}

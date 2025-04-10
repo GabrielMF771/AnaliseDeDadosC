@@ -23,7 +23,7 @@ O programa a ser construído deve ler dados de cada processo, identificando cada
 2. Ordenar, em ordem decrescente, o conjunto de dados a partir do atributo “data_ajuizamento”;
 3. Contar quantos processos estão vinculados a um determinado “id_classe”;
 4. Identificar quantos “id_assuntos” constam nos processos presentes na base de dados;
-5. Listar todos os processos que estão vinculados a mais de um assunto; e
+5. Listar todos os processos que estão vinculados a mais de um assunto;
 6. Indicar a quantos dias um processo está em tramitação na justiça.
 
 ## Observações:
