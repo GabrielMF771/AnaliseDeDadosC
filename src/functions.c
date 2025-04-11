@@ -265,26 +265,38 @@ void ordenarPorData(Processo *processos, int n) {
     }
 }
 
-int dataParaInt(char *data) {
-    int ano, mes, dia;
-    sscanf(data, "%d-%d-%d", &ano, &mes, &dia);
-    return ano * 365 + mes * 30 + dia;
-}
-
 void calcularDiasTramitacao(Processo *processos, int chave, int totalProcessos) {
     time_t t = time(NULL);
-    struct tm *tm_info = localtime(&t);
-    int dias_hoje = (tm_info->tm_year + 1900) * 365 + (tm_info->tm_mon + 1) * 30 + tm_info->tm_mday;
     int dias_tramitacao = -1; // Valor padrão caso o ID não seja encontrado
-
-    char data_ajuizamento[20];
 
     for (int i = 0; i < totalProcessos; i++){
         if(processos[i].id == chave){
-            strcpy(data_ajuizamento, processos[i].data_ajuizamento);
+            struct tm data_ajuizamento_tm = {0};
+            if (sscanf(processos[i].data_ajuizamento, "%4d-%2d-%2d",
+                       &data_ajuizamento_tm.tm_year,
+                       &data_ajuizamento_tm.tm_mon,
+                       &data_ajuizamento_tm.tm_mday) != 3) {
+                printf("Erro ao processar a data de ajuizamento.\n");
+                return;
+            }
+
+            data_ajuizamento_tm.tm_year -= 1900; // Ajusta o ano
+            data_ajuizamento_tm.tm_mon -= 1; // Ajusta o mês
+
+            time_t data_ajuizamento_time = mktime(&data_ajuizamento_tm);
+            if (data_ajuizamento_time == -1) {
+                printf("Erro ao converter a data de ajuizamento para time_t.\n");
+                return;
+            }
+
+            double diferenca_segundos = difftime(t, data_ajuizamento_time);
+            dias_tramitacao = (int)(diferenca_segundos / (60 * 60 * 24));
+
+            printf("\nDias de tramitacao: %d\n\n", dias_tramitacao);
+            return;
         }
     }
-    int dias_processo = dataParaInt(data_ajuizamento);
-    dias_tramitacao = dias_hoje - dias_processo;
-    printf("\nDias de tramitacao: %d\n\n", dias_tramitacao);
+
+    // Se chegou aqui, o ID não foi encontrado
+    printf("Processo com ID %d não encontrado.\n", chave);
 }
