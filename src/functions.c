@@ -214,7 +214,6 @@ int ocorrenciasClasse(Processo *processos, int chave, int tamanho){
                         if(auxint == chave)
                         ocorrencias++;
                         memset(aux, '\0', sizeof(aux));
-                        //printf("%d\n",auxint);
                         continue;
 
                     }else{ //SE TIVER CHEGADO NUMA VIRGULA
@@ -222,7 +221,6 @@ int ocorrenciasClasse(Processo *processos, int chave, int tamanho){
                         if(auxint == chave)
                         ocorrencias++;
                         memset(aux, '\0', sizeof(aux));
-                        //printf("%d\n",auxint);
                         k = 0;
                     }
                }
@@ -289,5 +287,4 @@ void calcularDiasTramitacao(Processo *processos, int chave, int totalProcessos) 
     int dias_processo = dataParaInt(data_ajuizamento);
     dias_tramitacao = dias_hoje - dias_processo;
     printf("\nDias de tramitacao: %d\n\n", dias_tramitacao);
-
 }
