@@ -33,10 +33,14 @@ int main() {
         free(processos);
         return 1;
     }
+    
+    //CHAMADA DA FUNÇÃO DE LISTAMENTO DOS PROCESSOS COM MAIS DE 1 ASSUNTO
+    variosAssuntos(processos,maxProcessos);
 
     //CHAMADA DA FUNÇÃO DE CONTAGEM DE REPETIÇÕES
-    quantidadeRepeticaoClasse =ocorrenciasClasse(processos, classeBuscada, maxProcessos);
+    quantidadeRepeticaoClasse = ocorrenciasClasse(processos, classeBuscada, maxProcessos);
     printf("Processos vinculados ao id_classe: \"%d\": %d\n",classeBuscada, quantidadeRepeticaoClasse);
+    
     
     // Ordenar os dados pelo atributo id
     ordenarPorId(processos, totalProcessos);
@@ -45,6 +49,7 @@ int main() {
     salvarDadosOrdenados(arquivoSaida, processos, totalProcessos);
     
     printf("Dados ordenados por id e salvos em '%s'.\n", arquivoSaida);
+    
 
     // Liberar a memória alocada
     free(processos);

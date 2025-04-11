@@ -230,3 +230,28 @@ int ocorrenciasClasse(Processo *processos, int chave, int tamanho){
         }
     return ocorrencias;
 }
+
+void variosAssuntos(Processo *processos, int tamanho){
+
+    int repeticoes =0;
+    int indice = 0;
+    printf("\n\n\tLISTA DE PROCESSOS COM MAIS DE 1 ASSUNTO\n\n");
+   
+    for(int i = 0; i < tamanho; i++){
+      repeticoes =0;
+         for(int j = 1; j <50; j++){
+
+            if(processos[i].id_assunto[j] == ','){
+                if(repeticoes<1){
+                indice++;
+                printf("\n\t%d) --> %d",indice,processos[i].id);
+                }
+                repeticoes++;
+                continue;
+
+            }
+
+         }
+    }   
+    printf("\n\n\tTotal de processos que possuem mais de 1 assunto: ""%d""\n\n\n",indice);
+}
