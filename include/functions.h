@@ -1,5 +1,7 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
+#define MAX_LINE 2048
+#define MAX_ASSUNTOS 10000
 
 // Definição da estrutura Processo
 typedef struct {
@@ -24,5 +26,8 @@ int partition(Processo processos[], int low, int high);
 void ordenarPorId(Processo processos[], int n);
 void ordenarPorData(Processo *processos, int n);
 void salvarDadosOrdenados(const char *nomeArquivo, Processo processos[], int n);
+
+// Função para remover espaços no início e fim da string
+void trim(char *str);
 
 #endif // FUNCTIONS_H

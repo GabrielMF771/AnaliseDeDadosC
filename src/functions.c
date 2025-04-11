@@ -3,6 +3,25 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
+
+// Função para remover espaços no início e fim da string
+void trim(char *str) {
+    int len = strlen(str);
+    // Remove espaços no fim
+    while (len > 0 && isspace((unsigned char)str[len - 1])) {
+        str[--len] = '\0';
+    }
+    // Move o ponteiro para o primeiro caractere não branco
+    char *start = str;
+    while (*start && isspace((unsigned char)*start)) {
+        start++;
+    }
+    // Se houve espaços no início, move o conteúdo da string pra frente
+    if (start != str) {
+        memmove(str, start, strlen(start) + 1);
+    }
+}
 
 // Função para contar o número de linhas no arquivo CSV
 int contarLinhas(const char *nomeArquivo) {

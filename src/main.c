@@ -89,7 +89,71 @@ int main() {
                 break;
 
             case (4):
-                printf("\nWIP\n\n");
+                FILE *fp = fopen("processo_043_202409032338.csv", "r");
+                if (!fp) {
+                    perror("Erro ao abrir o arquivo");
+                    return 1;
+                }
+            
+                char line[MAX_LINE];
+                char *id_assuntos[MAX_ASSUNTOS];
+                int count = 0;
+            
+                // Ignorar o cabeçalho
+                fgets(line, MAX_LINE, fp);
+            
+                while (fgets(line, MAX_LINE, fp)) {
+                    char temp[MAX_LINE];
+                    strcpy(temp, line);
+            
+                    char *token = strtok(temp, ","); // coluna 1: id
+                    for (int i = 1; i < 4 && token != NULL; i++) {
+                        token = strtok(NULL, ","); // pula até a 4ª coluna
+                    }
+            
+                    if (token) {
+                        char *id_assunto_raw = strtok(NULL, ",");
+            
+                        if (!id_assunto_raw) continue;
+            
+                        char *abre = strchr(id_assunto_raw, '{');
+                        char *fecha = strchr(id_assunto_raw, '}');
+            
+                        if (!abre || !fecha || fecha <= abre + 1) continue;
+            
+                        char buffer[MAX_LINE];
+                        strncpy(buffer, abre + 1, fecha - abre - 1);
+                        buffer[fecha - abre - 1] = '\0';
+            
+                        char *subtoken = strtok(buffer, ",");
+                        while (subtoken) {
+                            trim(subtoken);
+            
+                            int exists = 0;
+                            for (int i = 0; i < count; i++) {
+                                if (strcmp(id_assuntos[i], subtoken) == 0) {
+                                    exists = 1;
+                                    break;
+                                }
+                            }
+            
+                            if (!exists && count < MAX_ASSUNTOS) {
+                                id_assuntos[count++] = strdup(subtoken);
+                            }
+            
+                            subtoken = strtok(NULL, ",");
+                        }
+                    }
+                }
+            
+                fclose(fp);
+            
+                printf("Total de id_assuntos distintos: %d\n", count);
+            
+                for (int i = 0; i < count; i++) {
+                    printf("- %s\n", id_assuntos[i]);
+                    free(id_assuntos[i]);
+                }
                 break;
             
             case (5):
