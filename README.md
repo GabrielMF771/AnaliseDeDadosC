@@ -48,7 +48,7 @@ O programa a ser construído deve ler dados de cada processo, identificando cada
 
 - Este trabalho prático pode ser desenvolvido em grupos de até 5 integrantes e vale 2,5 pontos.
 
-- Caso seja entregue com atraso, o valor total passará a ser, para n dias de atraso, .
+- Caso seja entregue com atraso, o valor total passará a ser, para n dias de atraso.
 
 - O código-fonte deve ser enviado pelo AVA e disponibilizado no Git.
 
