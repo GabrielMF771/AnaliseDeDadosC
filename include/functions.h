@@ -19,6 +19,7 @@ int lerDados(const char *nomeArquivo, Processo *processos);
 int ocorrenciasClasse(Processo *processos, int chave, int tamanho);
 void variosAssuntos(Processo *processos, int tamanho);
 void calcularDiasTramitacao(Processo *processos, int chave, int totalProcessos);
+void funcaoGuilherme(const char *nomeArquivo);
 
 // Ordenação
 void quicksort(Processo processos[], int low, int high);
