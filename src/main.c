@@ -90,7 +90,6 @@ int main() {
                 break;
 
             case (4):
-              
                 funcaoGuilherme(arquivoEntrada);
                break;
 

@@ -322,70 +322,74 @@ void calcularDiasTramitacao(Processo *processos, int chave, int totalProcessos) 
 
 void funcaoGuilherme(const char *nomeArquivo){
 
-char line[MAX_LINE];
-char *id_assuntos[MAX_ASSUNTOS];
-int count = 0;
+    char line[MAX_LINE];
+    char *id_assuntos[MAX_ASSUNTOS];
+    int count = 0;
 
-FILE *arquivo = fopen(nomeArquivo, "r");
-if (!arquivo) {
-    perror("Erro ao abrir o arquivo");
-    return 0;
-}
-
-// Ignorar o cabeçalho
-fgets(line, MAX_LINE, arquivo);
-
-while (fgets(line, MAX_LINE, arquivo)) {
-    char temp[MAX_LINE];
-    strcpy(temp, line);
-
-    char *token = strtok(temp, ","); // coluna 1: id
-    for (int i = 1; i < 4 && token != NULL; i++) {
-        token = strtok(NULL, ","); // pula até a 4ª coluna
+    FILE *arquivo = fopen(nomeArquivo, "r");
+    if (!arquivo) {
+        perror("Erro ao abrir o arquivo");
+        return;
     }
 
-    if (token) {
-        char *id_assunto_raw = strtok(NULL, ",");
+    // Ignorar o cabeçalho
+    fgets(line, MAX_LINE, arquivo);
 
-        if (!id_assunto_raw) continue;
+    while (fgets(line, MAX_LINE, arquivo)) {
+        char temp[MAX_LINE];
+        strcpy(temp, line);
 
-        char *abre = strchr(id_assunto_raw, '{');
-        char *fecha = strchr(id_assunto_raw, '}');
+        char *token = strtok(temp, ","); // coluna 1: id
+        for (int i = 1; i < 4 && token != NULL; i++) {
+            token = strtok(NULL, ","); // pula até a 4ª coluna
+        }
 
-        if (!abre || !fecha || fecha <= abre + 1) continue;
+        if (token) {
+            char *id_assunto_raw = strtok(NULL, ",");
 
-        char buffer[MAX_LINE];
-        strncpy(buffer, abre + 1, fecha - abre - 1);
-        buffer[fecha - abre - 1] = '\0';
+            if (!id_assunto_raw) continue;
 
-        char *subtoken = strtok(buffer, ",");
-        while (subtoken) {
-            trim(subtoken);
+            char *abre = strchr(id_assunto_raw, '{');
+            char *fecha = strchr(id_assunto_raw, '}');
 
-            int exists = 0;
-            for (int i = 0; i < count; i++) {
-                if (strcmp(id_assuntos[i], subtoken) == 0) {
-                    exists = 1;
-                    break;
+            if (!abre || !fecha || fecha <= abre + 1) continue;
+
+            char buffer[MAX_LINE];
+            strncpy(buffer, abre + 1, fecha - abre - 1);
+            buffer[fecha - abre - 1] = '\0';
+
+            char *subtoken = strtok(buffer, ",");
+            while (subtoken) {
+                trim(subtoken);
+
+                int exists = 0;
+                for (int i = 0; i < count; i++) {
+                    if (strcmp(id_assuntos[i], subtoken) == 0) {
+                        exists = 1;
+                        break;
+                    }
                 }
-            }
 
-            if (!exists && count < MAX_ASSUNTOS) {
-                id_assuntos[count++] = strdup(subtoken);
-            }
+                if (!exists && count < MAX_ASSUNTOS) {
+                    id_assuntos[count++] = strdup(subtoken);
+                }
 
-            subtoken = strtok(NULL, ",");
+                subtoken = strtok(NULL, ",");
+            }
         }
     }
-}
 
-fclose(arquivo);
+    fclose(arquivo);
 
-printf("\n\n\nTotal de id_assuntos distintos: %d\n\n", count);
+    printf("\nTotal de id_assuntos distintos: %d\n\n", count);
 
-for (int i = 0; i < count; i++) {
-    printf("- %s\n", id_assuntos[i]);
-    free(id_assuntos[i]);
-}
+    /* Habilitar para ver a listagem dos processos
 
+    for (int i = 0; i < count; i++) {
+        printf("- %s\n", id_assuntos[i]);
+        free(id_assuntos[i]);
+    }
+        
+    */
+    
 }
