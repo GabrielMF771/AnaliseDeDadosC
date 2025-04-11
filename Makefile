@@ -29,6 +29,7 @@ clean:
 	@if exist $(OBJ_DIR) rmdir /s /q $(OBJ_DIR)
 	@if exist $(BIN_DIR) rmdir /s /q $(BIN_DIR)
 	@if exist ordenado_por_id.csv del /q ordenado_por_id.csv del
+	@if exist ordenado_por_data.csv del /q ordenado_por_data.csv del
 
 run: all
 	$(TARGET)

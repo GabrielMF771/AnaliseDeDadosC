@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 // Função para contar o número de linhas no arquivo CSV
 int contarLinhas(const char *nomeArquivo) {
@@ -192,14 +193,13 @@ void salvarDadosOrdenados(const char *nomeArquivo, Processo processos[], int n) 
 }
 
 int ocorrenciasClasse(Processo *processos, int chave, int tamanho){
-
     int ocorrencias = 0;
     int i ;
     char aux[50] = "";
     int auxint = 0;
         for(i = 0; i < tamanho; i++){
             int k =0;
-            for(int j = 1; j <50; j++){
+            for(int j = 1; j < 50; j++){
 
                 //ATRIBUINDO A STRING AUXILIAR ATE A VIRGULA OU CHAVE FINAL
                if(processos[i].id_classe[j] != '}' && processos[i].id_classe[j] != ','){
@@ -210,12 +210,12 @@ int ocorrenciasClasse(Processo *processos, int chave, int tamanho){
             
                else{   
                     if(processos[i].id_classe[j] == '}'){ //SE TIVER CHEGADO NA CHAVE FINAL
-                           auxint = atoi(aux);
-                           if(auxint == chave)
-                           ocorrencias++;
-                           memset(aux, '\0', sizeof(aux));
-                           //printf("%d\n",auxint);
-                           continue;
+                        auxint = atoi(aux);
+                        if(auxint == chave)
+                        ocorrencias++;
+                        memset(aux, '\0', sizeof(aux));
+                        //printf("%d\n",auxint);
+                        continue;
 
                     }else{ //SE TIVER CHEGADO NUMA VIRGULA
                         auxint = atoi(aux);
@@ -235,7 +235,7 @@ void variosAssuntos(Processo *processos, int tamanho){
 
     int repeticoes =0;
     int indice = 0;
-    printf("\n\n\tLISTA DE PROCESSOS COM MAIS DE 1 ASSUNTO\n\n");
+    printf("\nLista de processos com mais de 1 assunto\n\n");
    
     for(int i = 0; i < tamanho; i++){
       repeticoes =0;
@@ -248,10 +248,46 @@ void variosAssuntos(Processo *processos, int tamanho){
                 }
                 repeticoes++;
                 continue;
-
             }
-
          }
     }   
-    printf("\n\n\tTotal de processos que possuem mais de 1 assunto: ""%d""\n\n\n",indice);
+    printf("\n\n\tTotal de processos que possuem mais de 1 assunto: '%d'\n\n",indice);
+}
+
+void ordenarPorData(Processo *processos, int n) {
+    Processo temp;
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - 1 - i; j++) {
+            if (strcmp(processos[j].data_ajuizamento, processos[j + 1].data_ajuizamento) < 0) {
+                temp = processos[j];
+                processos[j] = processos[j + 1];
+                processos[j + 1] = temp;
+            }
+        }
+    }
+}
+
+int dataParaInt(char *data) {
+    int ano, mes, dia;
+    sscanf(data, "%d-%d-%d", &ano, &mes, &dia);
+    return ano * 365 + mes * 30 + dia;
+}
+
+void calcularDiasTramitacao(Processo *processos, int chave, int totalProcessos) {
+    time_t t = time(NULL);
+    struct tm *tm_info = localtime(&t);
+    int dias_hoje = (tm_info->tm_year + 1900) * 365 + (tm_info->tm_mon + 1) * 30 + tm_info->tm_mday;
+    int dias_tramitacao = -1; // Valor padrão caso o ID não seja encontrado
+
+    char data_ajuizamento[20];
+
+    for (int i = 0; i < totalProcessos; i++){
+        if(processos[i].id == chave){
+            strcpy(data_ajuizamento, processos[i].data_ajuizamento);
+        }
+    }
+    int dias_processo = dataParaInt(data_ajuizamento);
+    dias_tramitacao = dias_hoje - dias_processo;
+    printf("\nDias de tramitacao: %d\n\n", dias_tramitacao);
+
 }
